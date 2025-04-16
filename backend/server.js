@@ -7,6 +7,7 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const riderRoutes = require("./routes/riderRoutes");
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
 
@@ -25,10 +26,11 @@ app.get("/", (req, res) => {
 });
 
 // Mounting all routes
-app.use("/api", productRoutes);
-app.use("/api", orderRoutes);
-app.use("/api", riderRoutes);
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/rider", riderRoutes);
+app.use("/api/users", userRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5050;

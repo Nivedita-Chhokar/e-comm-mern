@@ -1,17 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const Product = require("../models/Product");
+const productController = require("../controllers/productController");
+const verifyToken = require("../middleware/verifyToken");
+const roleCheck = require("../middleware/roleCheck");
 
-// GET all products
-router.get("/products", async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
-});
+// Public routes
+router.get("/", productController.getAllProducts);
+router.get("/:id", productController.getProductById);
 
-// GET product details
-router.get("/products/:id", async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  product ? res.json(product) : res.status(404).json({ message: "Not found" });
-});
+// Admin routes
+router.post(
+  "/", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  productController.createProduct
+);
+
+router.put(
+  "/:id", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  productController.updateProduct
+);
+
+router.delete(
+  "/:id", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  productController.deleteProduct
+);
 
 module.exports = router;
