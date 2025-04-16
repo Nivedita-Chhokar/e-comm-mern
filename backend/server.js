@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const riderRoutes = require("./routes/riderRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 
@@ -20,13 +21,14 @@ connectDB();
 
 // Base test route
 app.get("/", (req, res) => {
-  res.send("API is running 🚀");
+  res.send("API is running");
 });
 
 // Mounting all routes
 app.use("/api", productRoutes);
 app.use("/api", orderRoutes);
 app.use("/api", riderRoutes);
+app.use("/api", authRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5050;
