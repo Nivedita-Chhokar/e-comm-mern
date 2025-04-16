@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Product = require("../models/Product"); // Adjust path based on your project structure
-const Order = require("../models/Order"); // Adjust path based on your project structure
-const connectDB = require("../config/db"); // Adjust path based on your project structure
+const Product = require("../models/Product"); 
+const Order = require("../models/Order"); 
+const connectDB = require("../config/db");
 const { faker } = require('@faker-js/faker');
 
 require('dotenv').config();  

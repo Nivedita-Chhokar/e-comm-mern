@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middleware/verifyToken"); // adjust path if needed
-const Order = require("../models/Order"); // adjust path if needed
+const verifyToken = require("../middleware/verifyToken"); 
+const Order = require("../models/Order"); 
 
 // Rider fetches their assigned orders
 router.get("/rider/orders", verifyToken, async (req, res) => {
