@@ -51,7 +51,11 @@ const verifyToken = async (req, res, next) => {
 
 // module.exports = verifyToken;
 module.exports = (req, res, next) => {
-    req.user = { uid: "dummy-user-123" };
-    console.log("Middleware hit, user simulated:", req.user);  // to test token
+    // For testing only
+    req.user = { 
+      uid: "customer-user-123",  // or admin-user-123, rider-user-123
+      email: "test@example.com",
+      role: "admin"  // or customer, rider
+    };
     next();
 };
