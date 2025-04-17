@@ -1,15 +1,16 @@
-const User = require("../models/User");
+const User = require('../models/User');
 
 // Get user profile
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUID: req.user.uid })
-      .select('-__v');
-    
+    const user = await User.findOne({ firebaseUID: req.user.uid }).select(
+      '-__v'
+    );
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -26,16 +27,16 @@ exports.updateUserProfile = async (req, res) => {
         $set: {
           displayName: req.body.displayName,
           address: req.body.address,
-          phone: req.body.phone
-        }
+          phone: req.body.phone,
+        },
       },
       { new: true, runValidators: true }
     );
-    
+
     if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json(updatedUser);
   } catch (error) {
     res.status(400).json({ error: error.message });

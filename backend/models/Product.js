@@ -1,66 +1,69 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  category: {
-    type: String,
-    required: true,
-    enum: ['fan', 'air_conditioner'] // Only fans and air conditioners as per PRD
-  },
-  imageURLs: [String],
-  variants: [
-    {
-      size: {
-        type: String,
-        required: true
-      },
-      color: {
-        type: String,
-        required: true
-      },
-      stock: {
-        type: Number,
-        required: true,
-        min: 0,
-        default: 0
-      },
-      sku: String
-    }
-  ],
-  ratings: {
-    average: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    count: {
+    description: {
+      type: String,
+      required: true,
+    },
+    price: {
       type: Number,
-      default: 0
-    }
+      required: true,
+      min: 0,
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: ['fan', 'air_conditioner'], // Only fans and air conditioners as per PRD
+    },
+    imageURLs: [String],
+    variants: [
+      {
+        size: {
+          type: String,
+          required: true,
+        },
+        color: {
+          type: String,
+          required: true,
+        },
+        stock: {
+          type: Number,
+          required: true,
+          min: 0,
+          default: 0,
+        },
+        sku: String,
+      },
+    ],
+    ratings: {
+      average: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5,
+      },
+      count: {
+        type: Number,
+        default: 0,
+      },
+    },
+    features: [String],
+    inStock: {
+      type: Boolean,
+      default: true,
+    },
+    specifications: {
+      type: Map,
+      of: String,
+    },
   },
-  features: [String],
-  inStock: {
-    type: Boolean,
-    default: true
-  },
-  specifications: {
-    type: Map,
-    of: String
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);
