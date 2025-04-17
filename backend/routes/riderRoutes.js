@@ -43,6 +43,11 @@ router.put(
 );
 
 // Get rider statistics
-router.get('/stats', verifyToken, riderOnly, riderController.getRiderStats);
+router.get(
+  '/stats', 
+  verifyToken, 
+  riderOnly, 
+  riderController.getRiderStats
+);
 
 module.exports = router;

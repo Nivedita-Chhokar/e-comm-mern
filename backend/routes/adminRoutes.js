@@ -8,8 +8,20 @@ const roleCheck = require('../middleware/roleCheck');
 const adminOnly = roleCheck(['admin']);
 
 // User management
-router.get('/users', verifyToken, adminOnly, adminController.getAllUsers);
-router.get('/users/:id', verifyToken, adminOnly, adminController.getUserById);
+router.get(
+  '/users', 
+  verifyToken, 
+  adminOnly, 
+  adminController.getAllUsers
+);
+
+router.get(
+  '/users/:id', 
+  verifyToken, 
+  adminOnly, 
+  adminController.getUserById
+);
+
 router.put(
   '/users/:id/role',
   verifyToken,
@@ -24,7 +36,12 @@ router.put(
 );
 
 // Rider management
-router.get('/riders', verifyToken, adminOnly, adminController.getAllRiders);
+router.get(
+  '/riders', 
+  verifyToken, 
+  adminOnly, 
+  adminController.getAllRiders
+);
 
 // Approved emails management
 router.get(

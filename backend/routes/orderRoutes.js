@@ -5,9 +5,17 @@ const verifyToken = require('../middleware/verifyToken');
 const roleCheck = require('../middleware/roleCheck');
 
 // Customer routes
-router.get('/my-orders', verifyToken, orderController.getMyOrders);
+router.get(
+  '/my-orders', 
+  verifyToken, 
+  orderController.getMyOrders
+);
 
-router.post('/', verifyToken, orderController.createOrder);
+router.post(
+  '/', 
+  verifyToken, 
+  orderController.createOrder
+);
 
 // Admin routes
 router.get(
