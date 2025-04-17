@@ -1,31 +1,58 @@
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middleware/verifyToken"); 
-const Order = require("../models/Order"); 
+const riderController = require("../controllers/riderController");
+const verifyToken = require("../middleware/verifyToken");
+const roleCheck = require("../middleware/roleCheck");
 
-// Rider fetches their assigned orders
-router.get("/rider/orders", verifyToken, async (req, res) => {
-  try {
-    const orders = await Order.find({ assignedRider: req.user.uid });
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch rider orders" });
-  }
-});
+// All rider routes require rider role
+const riderOnly = roleCheck(['rider']);
 
-// Rider updates order status
-router.put("/rider/orders/:id/status", verifyToken, async (req, res) => {
-  const { status } = req.body;
-  try {
-    const updated = await Order.findOneAndUpdate(
-      { _id: req.params.id, assignedRider: req.user.uid },
-      { status },
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update order status" });
-  }
-});
+// Get all assigned orders
+router.get(
+  "/orders", 
+  verifyToken, 
+  riderOnly, 
+  riderController.getAssignedOrders
+);
+
+// Get single order details
+router.get(
+  "/orders/:id", 
+  verifyToken, 
+  riderOnly, 
+  riderController.getOrderDetails
+);
+
+// Update order delivery status
+router.put(
+  "/orders/:id/delivery", 
+  verifyToken, 
+  riderOnly, 
+  riderController.updateDeliveryStatus
+);
+
+// Get rider profile
+router.get(
+  "/profile", 
+  verifyToken, 
+  riderOnly, 
+  riderController.getRiderProfile
+);
+
+// Update rider profile
+router.put(
+  "/profile", 
+  verifyToken, 
+  riderOnly, 
+  riderController.updateRiderProfile
+);
+
+// Get rider statistics
+router.get(
+  "/stats", 
+  verifyToken, 
+  riderOnly, 
+  riderController.getRiderStats
+);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const ApprovedEmail = require("../models/ApprovedEmail");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Google login
+// Google login - this is the main authentication method
 exports.googleLogin = async (req, res) => {
   const { token } = req.body;
   
@@ -56,6 +56,12 @@ exports.googleLogin = async (req, res) => {
         role: approvedEmail.role
       });
       await user.save();
+    } else {
+      // Update user details in case they've changed
+      user.displayName = name;
+      user.photoURL = picture;
+      user.role = approvedEmail.role; // Ensure role is updated from approved email
+      await user.save();
     }
     
     // Create custom token for Firebase client SDK
@@ -92,31 +98,6 @@ exports.getCurrentUser = async (req, res) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-};
-
-// Update user profile
-exports.updateProfile = async (req, res) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { firebaseUID: req.user.uid },
-      {
-        $set: {
-          displayName: req.body.displayName,
-          address: req.body.address,
-          phone: req.body.phone
-        }
-      },
-      { new: true, runValidators: true }
-    );
-    
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
 };
 

@@ -4,7 +4,10 @@ const ApprovedEmail = require("../models/ApprovedEmail");
 
 const verifyToken = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(403).json({ message: "No token provided" });
+  
+  if (!token) {
+    return res.status(403).json({ message: "No token provided" });
+  }
 
   try {
     const decoded = await admin.auth().verifyIdToken(token);
@@ -21,18 +24,20 @@ const verifyToken = async (req, res, next) => {
       });
     }
     
-    // Find or create user
-    let user = await User.findOne({ firebaseUID: decoded.uid });
+    // Find user
+    const user = await User.findOne({ firebaseUID: decoded.uid });
     
     if (!user) {
-      user = new User({
-        email: decoded.email,
-        displayName: decoded.name,
-        photoURL: decoded.picture,
-        firebaseUID: decoded.uid,
-        role: approvedEmail.role
+      return res.status(404).json({ 
+        message: "User not found in system" 
       });
-      await user.save();
+    }
+    
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(403).json({ 
+        message: "User account is inactive" 
+      });
     }
     
     // Add user data to request
@@ -51,11 +56,11 @@ const verifyToken = async (req, res, next) => {
 
 // module.exports = verifyToken;
 module.exports = (req, res, next) => {
-    // For testing only
-    req.user = { 
-      uid: "customer-user-123",  // or admin-user-123, rider-user-123
-      email: "test@example.com",
-      role: "admin"  // or customer, rider
-    };
-    next();
+  // For testing only
+  req.user = { 
+    uid: "customer-user-123",  // or admin-user-123, rider-user-123
+    email: "test@example.com",
+    role: "admin"  // or customer, rider
+  };
+  next();
 };

@@ -8,7 +8,7 @@ const roleCheck = require("../middleware/roleCheck");
 router.get("/", productController.getAllProducts);
 router.get("/:id", productController.getProductById);
 
-// Admin routes
+// Admin routes (protected)
 router.post(
   "/", 
   verifyToken, 
@@ -28,6 +28,13 @@ router.delete(
   verifyToken, 
   roleCheck(['admin']), 
   productController.deleteProduct
+);
+
+router.patch(
+  "/:id/stock", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  productController.updateProductStock
 );
 
 module.exports = router;

@@ -1,57 +1,56 @@
 const express = require("express");
 const router = express.Router();
-const Order = require("../models/Order");
-const verifyToken = require("../middleware/verifyToken"); 
+const orderController = require("../controllers/orderController");
+const verifyToken = require("../middleware/verifyToken");
+const roleCheck = require("../middleware/roleCheck");
 
-// Create order
-router.post("/", verifyToken, async (req, res) => {
-  try {
-    const newOrder = new Order(req.body);
-    const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to create order" });
-  }
-});
+// Customer routes
+router.get(
+  "/my-orders", 
+  verifyToken, 
+  orderController.getMyOrders
+);
 
-// Get all orders (Admin)
-router.get("/", verifyToken, async (req, res) => {
-  try {
-    const orders = await Order.find().populate("product");
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch orders" });
-  }
-});
+router.post(
+  "/", 
+  verifyToken, 
+  orderController.createOrder
+);
 
-// Admin updates status
-router.put("/:id/status", verifyToken, async (req, res) => {
-  try {
-    const { status } = req.body;
-    const updated = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update order status" });
-  }
-});
+// Admin routes
+router.get(
+  "/", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  orderController.getAllOrders
+);
 
-// Admin assigns rider
-router.put("/:id/assign-rider", verifyToken, async (req, res) => {
-  try {
-    const { riderId } = req.body;
-    const updated = await Order.findByIdAndUpdate(
-      req.params.id,
-      { assignedRider: riderId },
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to assign rider" });
-  }
-});
+router.get(
+  "/:id", 
+  verifyToken, 
+  orderController.getOrderById  // Includes access control in controller
+);
+
+router.put(
+  "/:id/status", 
+  verifyToken, 
+  roleCheck(['admin']), 
+  orderController.updateOrderStatus
+);
+
+// Rider routes
+router.get(
+  "/rider/assigned", 
+  verifyToken, 
+  roleCheck(['rider']), 
+  orderController.getRiderOrders
+);
+
+router.put(
+  "/:id/delivery", 
+  verifyToken, 
+  roleCheck(['rider']), 
+  orderController.updateDeliveryStatus
+);
 
 module.exports = router;
