@@ -1,4 +1,3 @@
-// src/pages/customer/Checkout.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useCart from '../../hooks/useCart';
@@ -13,7 +12,6 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Form state
   const [shippingInfo, setShippingInfo] = useState({
     name: currentUser?.displayName || '',
     street: currentUser?.address?.street || '',
@@ -26,12 +24,10 @@ const Checkout = () => {
   
   const [paymentMethod, setPaymentMethod] = useState('Credit Card');
   
-  // Calculate totals
   const subtotal = getCartTotal();
-  const shippingFee = 10; // Fixed shipping fee
+  const shippingFee = 10; 
   const total = subtotal + shippingFee;
   
-  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setShippingInfo({
@@ -40,7 +36,6 @@ const Checkout = () => {
     });
   };
   
-  // Validate form
   const validateForm = () => {
     const requiredFields = ['name', 'street', 'city', 'state', 'zipCode', 'country', 'phone'];
     for (const field of requiredFields) {
@@ -79,13 +74,10 @@ const Checkout = () => {
         paymentMethod,
       };
       
-      // Send order to backend
       const response = await api.post('/orders', orderData);
       
-      // Clear cart on successful order
       clearCart();
       
-      // Redirect to success page
       navigate(`/orders?success=true&orderId=${response.data._id}`);
       
     } catch (err) {

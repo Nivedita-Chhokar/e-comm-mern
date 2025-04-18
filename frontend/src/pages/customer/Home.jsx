@@ -1,4 +1,3 @@
-// src/pages/customer/Home.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useProducts from '../../hooks/useProducts';

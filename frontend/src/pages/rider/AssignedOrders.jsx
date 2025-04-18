@@ -1,4 +1,3 @@
-// src/pages/rider/AssignedOrders.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useOrders from '../../hooks/useOrders';
@@ -14,7 +13,6 @@ const AssignedOrders = () => {
     fetchRiderOrders();
   }, [fetchRiderOrders]);
 
-  // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);

@@ -1,5 +1,3 @@
-// src/pages/admin/Users.jsx
-// This component allows administrators to manage users and their roles
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import Loading from '../../components/common/Loading';
@@ -19,7 +17,6 @@ const Users = () => {
   const [actionSuccess, setActionSuccess] = useState(null);
   const [actionError, setActionError] = useState(null);
 
-  // Fetch users and approved emails
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,7 +54,6 @@ const Users = () => {
       
       await api.put(`/admin/users/${selectedUser._id}/role`, { role: newRole });
       
-      // Update state with new role
       setUsers(prevUsers => 
         prevUsers.map(user => 
           user._id === selectedUser._id ? { ...user, role: newRole } : user
@@ -67,7 +63,6 @@ const Users = () => {
       setActionSuccess(`User ${selectedUser.displayName} is now a ${newRole}`);
       setShowModal(false);
       
-      // Reset selected user and role
       setSelectedUser(null);
       setNewRole('');
     } catch (err) {
@@ -84,7 +79,6 @@ const Users = () => {
       
       await api.put(`/admin/users/${userId}/toggle-status`);
       
-      // Update state with new status
       setUsers(prevUsers => 
         prevUsers.map(user => 
           user._id === userId ? { ...user, isActive: !currentStatus } : user
@@ -113,13 +107,11 @@ const Users = () => {
       
       const response = await api.post('/admin/approved-emails', { email, role });
       
-      // Add new email to state
       setApprovedEmails(prev => [...prev, response.data.approvedEmail]);
       
       setActionSuccess(`Email ${email} has been approved as ${role}`);
       setShowApproveModal(false);
       
-      // Reset form
       setEmail('');
       setRole('customer');
     } catch (err) {
@@ -140,7 +132,6 @@ const Users = () => {
       
       await api.delete(`/admin/approved-emails/${id}`);
       
-      // Remove email from state
       setApprovedEmails(prev => prev.filter(email => email._id !== id));
       
       setActionSuccess('Approved email has been removed');

@@ -1,8 +1,6 @@
-// src/contexts/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import { getCurrentUser, signInWithGoogle, logOut } from '../services/authService';
 
-// Create the context
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -10,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize - check if user is already logged in
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -60,17 +57,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Check if user has admin role
   const isAdmin = () => {
     return currentUser?.role === 'admin';
   };
 
-  // Check if user has rider role
   const isRider = () => {
     return currentUser?.role === 'rider';
   };
 
-  // Check if user has customer role
   const isCustomer = () => {
     return currentUser?.role === 'customer';
   };

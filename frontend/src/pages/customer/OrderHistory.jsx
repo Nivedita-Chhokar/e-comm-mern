@@ -1,4 +1,3 @@
-// src/pages/customer/OrderHistory.js
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useOrders from '../../hooks/useOrders';
@@ -11,7 +10,6 @@ const OrderHistory = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [successOrderId, setSuccessOrderId] = useState(null);
 
-  // Check for success message from URL query params
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const success = queryParams.get('success') === 'true';
@@ -21,7 +19,6 @@ const OrderHistory = () => {
       setShowSuccess(true);
       setSuccessOrderId(orderId);
       
-      // Clear success message after 5 seconds
       const timer = setTimeout(() => {
         setShowSuccess(false);
         setSuccessOrderId(null);
@@ -31,18 +28,15 @@ const OrderHistory = () => {
     }
   }, [location.search]);
 
-  // Fetch orders on component mount
   useEffect(() => {
     fetchMyOrders();
   }, [fetchMyOrders]);
 
-  // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Render order items as comma-separated list
   const renderOrderItems = (items) => {
     return items.map(item => (
       `${item.quantity}x ${item.productId?.name || 'Product'} (${item.size}, ${item.color})`

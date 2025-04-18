@@ -1,16 +1,13 @@
-// src/contexts/CartContext.js
 import React, { createContext, useState, useEffect } from 'react';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  // Initialize cart from localStorage or empty array
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
   
-  // Sync cart with localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
@@ -18,7 +15,6 @@ export const CartProvider = ({ children }) => {
   // Add item to cart
   const addToCart = (product, size, color, quantity = 1) => {
     setCartItems(prevItems => {
-      // Check if this product variant is already in the cart
       const existingItemIndex = prevItems.findIndex(
         item => 
           item.productId === product._id && 
@@ -27,7 +23,6 @@ export const CartProvider = ({ children }) => {
       );
       
       if (existingItemIndex >= 0) {
-        // Update quantity of existing item
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += quantity;
         return updatedItems;

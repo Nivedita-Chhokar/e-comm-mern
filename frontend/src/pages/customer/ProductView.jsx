@@ -1,4 +1,3 @@
-// src/pages/customer/ProductView.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -12,7 +11,6 @@ const ProductView = () => {
   const { addToCart } = useCart();
   const fetchingRef = useRef(false);
   
-  // Local state
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,9 +20,7 @@ const ProductView = () => {
   const [mainImage, setMainImage] = useState('');
   const [addedToCart, setAddedToCart] = useState(false);
   
-  // Direct API fetch instead of using the hook to avoid infinite re-renders
   useEffect(() => {
-    // Only fetch if we haven't started fetching yet
     if (!fetchingRef.current && id) {
       fetchingRef.current = true;
       setLoading(true);
@@ -36,21 +32,17 @@ const ProductView = () => {
           
           setProduct(productData);
           
-          // Set default image
           if (productData.imageURLs && productData.imageURLs.length > 0) {
             setMainImage(productData.imageURLs[0]);
           }
           
-          // Set default size and color if variants exist
           if (productData.variants && productData.variants.length > 0) {
-            // Find a variant that has stock
             const inStockVariant = productData.variants.find(v => v.stock > 0);
             
             if (inStockVariant) {
               setSelectedSize(inStockVariant.size);
               setSelectedColor(inStockVariant.color);
             } else {
-              // Default to first variant if none have stock
               setSelectedSize(productData.variants[0].size);
               setSelectedColor(productData.variants[0].color);
             }
@@ -68,11 +60,10 @@ const ProductView = () => {
       fetchProduct();
     }
     
-    // Cleanup function
     return () => {
       fetchingRef.current = false;
     };
-  }, [id]); // Only depend on the ID, not on any function references
+  }, [id]); 
   
   // Get unique sizes and colors
   const getSizes = () => {
@@ -113,7 +104,6 @@ const ProductView = () => {
   const handleSizeChange = (size) => {
     setSelectedSize(size);
     
-    // If current color is not available for this size, select a new one
     const availableColors = getColors(size);
     if (!availableColors.includes(selectedColor) && availableColors.length > 0) {
       setSelectedColor(availableColors[0]);
@@ -127,7 +117,6 @@ const ProductView = () => {
     addToCart(product, selectedSize, selectedColor, quantity);
     setAddedToCart(true);
     
-    // Reset notification after 3 seconds
     setTimeout(() => {
       setAddedToCart(false);
     }, 3000);

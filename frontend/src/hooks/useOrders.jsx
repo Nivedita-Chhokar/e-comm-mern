@@ -1,4 +1,3 @@
-// src/hooks/useOrders.js
 import { useState, useCallback } from 'react';
 import { 
   getAllOrders, 
@@ -63,21 +62,19 @@ const useOrders = () => {
     }
   }, []);
 
-  // Admin: Update order status
   const changeOrderStatus = useCallback(async (orderId, status, riderId = null) => {
     try {
       setLoading(true);
       setError(null);
+      
       const updatedOrder = await updateOrderStatus(orderId, status, riderId);
       
-      // Update orders list with the updated order
       setOrders(prevOrders => 
         prevOrders.map(order => 
           order._id === orderId ? updatedOrder : order
         )
       );
-      
-      // Update current order if it's the same ID
+
       if (currentOrder && currentOrder._id === orderId) {
         setCurrentOrder(updatedOrder);
       }
@@ -98,14 +95,12 @@ const useOrders = () => {
       setError(null);
       const updatedOrder = await updateDeliveryStatus(orderId, status, notes);
       
-      // Update orders list with the updated order
       setOrders(prevOrders => 
         prevOrders.map(order => 
           order._id === orderId ? updatedOrder : order
         )
       );
       
-      // Update current order if it's the same ID
       if (currentOrder && currentOrder._id === orderId) {
         setCurrentOrder(updatedOrder);
       }

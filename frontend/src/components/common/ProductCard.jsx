@@ -1,12 +1,9 @@
-// src/components/common/ProductCard.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-  // Check if product has stock
   const isInStock = product.inStock;
   
-  // Get primary image or placeholder
   const productImage = product.imageURLs && product.imageURLs.length > 0
     ? product.imageURLs[0]
     : 'https://via.placeholder.com/300x300?text=No+Image';
@@ -70,7 +67,6 @@ const ProductCard = ({ product }) => {
                   className="w-4 h-4 rounded-full border border-gray-300"
                   style={{ 
                     backgroundColor: color.toLowerCase(),
-                    // For white color, add a more visible border
                     borderColor: color.toLowerCase() === 'white' ? '#d1d5db' : 'transparent'
                   }}
                   title={color}

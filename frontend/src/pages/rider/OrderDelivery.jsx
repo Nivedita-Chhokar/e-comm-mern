@@ -1,4 +1,3 @@
-// src/pages/rider/OrderDelivery.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useOrders from '../../hooks/useOrders';
@@ -16,19 +15,16 @@ const OrderDelivery = () => {
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
-  // Fetch order details on component mount
   useEffect(() => {
     fetchOrderById(id);
   }, [fetchOrderById, id]);
 
-  // Set default delivery status based on current order
   useEffect(() => {
     if (currentOrder && currentOrder.orderStatus === 'Shipped') {
       setDeliveryStatus('Delivered');
     }
   }, [currentOrder]);
 
-  // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -50,13 +46,10 @@ const OrderDelivery = () => {
       
       setUpdateSuccess(true);
       
-      // Reset form
       setDeliveryNotes('');
       
-      // Refresh order details
       fetchOrderById(id);
       
-      // Clear success message after 3 seconds
       setTimeout(() => {
         setUpdateSuccess(false);
       }, 3000);
@@ -67,7 +60,6 @@ const OrderDelivery = () => {
     }
   };
 
-  // Render order items
   const renderOrderItems = (items) => {
     return items.map((item, index) => (
       <div key={index} className="flex items-center py-3">
@@ -92,7 +84,6 @@ const OrderDelivery = () => {
     ));
   };
 
-  // Check if order can be updated (only "Shipped" orders can be updated)
   const canUpdate = currentOrder && currentOrder.orderStatus === 'Shipped';
 
   if (loading) return <Loading />;

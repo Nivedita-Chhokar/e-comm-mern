@@ -1,4 +1,3 @@
-// src/pages/admin/Orders.js
 import React, { useEffect, useState } from 'react';
 import useOrders from '../../hooks/useOrders';
 import Loading from '../../components/common/Loading';
@@ -19,12 +18,10 @@ const Orders = () => {
   const [showModal, setShowModal] = useState(false);
   const { currentUser } = useAuth();
 
-  // Fetch all orders when component mounts
   useEffect(() => {
     fetchAllOrders();
   }, [fetchAllOrders]);
 
-  // Fetch all available riders
   useEffect(() => {
     const fetchRiders = async () => {
       try {
@@ -46,13 +43,11 @@ const Orders = () => {
     ? orders.filter(order => order.orderStatus === statusFilter)
     : orders;
 
-  // Format date
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Handle status update
   const handleStatusUpdate = async (e) => {
     e.preventDefault();
     
@@ -61,7 +56,6 @@ const Orders = () => {
       return;
     }
 
-    // Require rider assignment for Shipped status
     if (newStatus === 'Shipped' && !selectedRider) {
       setUpdateError('Please assign a rider for shipping');
       return;
@@ -71,20 +65,17 @@ const Orders = () => {
       setUpdatingStatus(true);
       setUpdateError(null);
       
-      // Call the changeOrderStatus function from useOrders hook
       await changeOrderStatus(
         selectedOrder._id, 
         newStatus, 
         newStatus === 'Shipped' ? selectedRider : null
       );
       
-      // Close modal and reset form
       setShowModal(false);
       setSelectedOrder(null);
       setNewStatus('');
       setSelectedRider('');
       
-      // Refresh orders list
       fetchAllOrders();
     } catch (err) {
       console.error('Failed to update order status:', err);
@@ -94,16 +85,14 @@ const Orders = () => {
     }
   };
 
-  // Open modal for status update
   const openStatusModal = (order) => {
     setSelectedOrder(order);
-    setNewStatus(order.orderStatus); // Default to current status
+    setNewStatus(order.orderStatus); 
     setSelectedRider(order.assignedRider || '');
     setUpdateError(null);
     setShowModal(true);
   };
 
-  // Close modal
   const closeModal = () => {
     setShowModal(false);
     setSelectedOrder(null);
@@ -112,7 +101,6 @@ const Orders = () => {
     setUpdateError(null);
   };
 
-  // Render table head
   const renderTableHead = () => (
     <thead className="bg-gray-50">
       <tr>
@@ -141,7 +129,6 @@ const Orders = () => {
     </thead>
   );
 
-  // Status update modal
   const renderStatusModal = () => (
     <div className={`fixed inset-0 overflow-y-auto z-50 ${showModal ? '' : 'hidden'}`}>
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -314,6 +301,12 @@ const Orders = () => {
                 {filteredOrders.map(order => {
                   const statusInfo = getOrderStatusInfo(order.orderStatus);
                   
+                  let assignedRiderName = "None";
+                  if (order.assignedRider) {
+                    const rider = riders.find(r => r.firebaseUID === order.assignedRider);
+                    assignedRiderName = rider ? rider.displayName : "Assigned";
+                  }
+                  
                   return (
                     <tr key={order._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
@@ -336,7 +329,7 @@ const Orders = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {order.assignedRider ? (
                           <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
-                            Assigned
+                            {assignedRiderName}
                           </span>
                         ) : (
                           <span className="text-gray-400">

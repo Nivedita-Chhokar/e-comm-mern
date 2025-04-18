@@ -1,4 +1,3 @@
-// src/pages/customer/CartPage.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useCart from '../../hooks/useCart';
@@ -9,21 +8,17 @@ const CartPage = () => {
   const { currentUser, isAdmin, isRider } = useAuth();
   const navigate = useNavigate();
   
-  // Calculate cart totals
   const subtotal = getCartTotal();
-  const shippingFee = subtotal > 0 ? 10 : 0; // Example shipping calculation
+  const shippingFee = subtotal > 0 ? 10 : 0; 
   const total = subtotal + shippingFee;
   
   // Handle proceed to checkout
   const handleCheckout = () => {
     if (!currentUser) {
-      // Redirect to login if not logged in
       navigate('/login');
     } else if (isAdmin() || isRider()) {
-      // Admin and riders cannot checkout
       alert('Admins and riders cannot place orders. Please use a customer account.');
     } else {
-      // Proceed to checkout
       navigate('/checkout');
     }
   };

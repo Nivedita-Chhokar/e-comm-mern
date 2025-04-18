@@ -1,4 +1,3 @@
-// src/hooks/useProducts.js
 import { useState, useEffect, useCallback } from 'react';
 import { getAllProducts, getProductById } from '../services/productService';
 
@@ -50,7 +49,6 @@ const useProducts = (initialCategory = null) => {
     setCategory(newCategory);
   };
 
-  // Load products on initial render and when category changes
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);

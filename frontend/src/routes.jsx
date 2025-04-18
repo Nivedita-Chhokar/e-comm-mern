@@ -1,8 +1,6 @@
-// src/routes.js
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-// Protected route components
 import { 
   ProtectedRoute, 
   AdminRoute, 
@@ -12,7 +10,6 @@ import {
 
 // Auth pages
 import Login from './pages/auth/Login';
-// import AuthRedirect from './pages/auth/AuthRedirect';
 import Unauthorized from './pages/auth/Unauthorized';
 
 // Customer pages
@@ -27,7 +24,6 @@ import OrderHistory from './pages/customer/OrderHistory';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminOrders from './pages/admin/Orders';
 import AdminUsers from './pages/admin/Users';
-// import AdminApprovedEmails from './pages/admin/ApprovedEmails';
 
 // Rider pages
 import RiderDashboard from './pages/rider/RiderDashboard';
@@ -42,7 +38,6 @@ const AppRoutes = () => {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
-      {/* <Route path="/auth/redirect" element={<AuthRedirect />} /> */}
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       {/* Public customer routes */}
@@ -61,7 +56,6 @@ const AppRoutes = () => {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
         <Route path="/admin/users" element={<AdminUsers />} />
-        {/* <Route path="/admin/approved-emails" element={<AdminApprovedEmails />} /> */}
       </Route>
       
       {/* Rider routes */}

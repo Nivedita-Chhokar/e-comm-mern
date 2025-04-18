@@ -1,4 +1,3 @@
-// src/pages/customer/ProductCatalog.js
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useProducts from '../../hooks/useProducts';
@@ -30,7 +29,6 @@ const ProductCatalog = () => {
     changeCategory(category);
   };
   
-  // Effect to update category from URL params
   useEffect(() => {
     changeCategory(categoryParam);
   }, [categoryParam, changeCategory]);

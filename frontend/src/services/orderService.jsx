@@ -1,7 +1,5 @@
-// src/services/orderService.js
 import api from './api';
 
-// Get all orders (admin only)
 export const getAllOrders = async () => {
   try {
     const response = await api.get('/orders');
@@ -12,7 +10,6 @@ export const getAllOrders = async () => {
   }
 };
 
-// Get order by ID
 export const getOrderById = async (orderId) => {
   try {
     const response = await api.get(`/orders/${orderId}`);
@@ -23,7 +20,6 @@ export const getOrderById = async (orderId) => {
   }
 };
 
-// Get current user's orders
 export const getMyOrders = async () => {
   try {
     const response = await api.get('/orders/my-orders');
@@ -34,7 +30,6 @@ export const getMyOrders = async () => {
   }
 };
 
-// Create new order
 export const createOrder = async (orderData) => {
   try {
     const response = await api.post('/orders', orderData);
@@ -45,10 +40,10 @@ export const createOrder = async (orderData) => {
   }
 };
 
-// Admin: Update order status
 export const updateOrderStatus = async (orderId, orderStatus, assignedRider = null) => {
   try {
     const data = { orderStatus };
+    
     if (assignedRider) {
       data.assignedRider = assignedRider;
     }
@@ -77,7 +72,6 @@ export const updateDeliveryStatus = async (orderId, orderStatus, deliveryNotes =
   }
 };
 
-// Rider: Get assigned orders
 export const getRiderOrders = async () => {
   try {
     const response = await api.get('/orders/rider/assigned');

@@ -1,4 +1,3 @@
-// src/pages/auth/Login.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -8,7 +7,6 @@ const Login = () => {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
 
-  // If already logged in, redirect based on role
   useEffect(() => {
     if (currentUser) {
       if (currentUser.role === 'admin') {
@@ -26,7 +24,6 @@ const Login = () => {
       setLoginError(null);
       const user = await login();
       
-      // Navigation will be handled by the useEffect above
     } catch (err) {
       setLoginError(
         err.response?.data?.message ||
