@@ -25,7 +25,18 @@ export const getAllProducts = async (category, includeOutOfStock = false) => {
 // Get product by ID
 export const getProductById = async (productId) => {
   try {
+    // Add error handling for invalid productId
+    if (!productId) {
+      throw new Error('Invalid product ID');
+    }
+    
     const response = await api.get(`/products/${productId}`);
+    
+    // Check if we got a valid response
+    if (!response.data) {
+      throw new Error('Product not found');
+    }
+    
     return response.data;
   } catch (error) {
     console.error(`Error fetching product with ID ${productId}:`, error);

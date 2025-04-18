@@ -1,7 +1,7 @@
 // src/pages/customer/ProductView.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import useProducts from '../../hooks/useProducts';
+import api from '../../services/api';
 import useCart from '../../hooks/useCart';
 import Loading from '../../components/common/Loading';
 import ErrorMessage from '../../components/common/ErrorMessage';
@@ -9,9 +9,10 @@ import ErrorMessage from '../../components/common/ErrorMessage';
 const ProductView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { fetchProductById } = useProducts();
   const { addToCart } = useCart();
+  const fetchingRef = useRef(false);
   
+  // Local state
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,13 +22,18 @@ const ProductView = () => {
   const [mainImage, setMainImage] = useState('');
   const [addedToCart, setAddedToCart] = useState(false);
   
-  // Fetch product details
+  // Direct API fetch instead of using the hook to avoid infinite re-renders
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        setLoading(true);
-        const productData = await fetchProductById(id);
-        if (productData) {
+    // Only fetch if we haven't started fetching yet
+    if (!fetchingRef.current && id) {
+      fetchingRef.current = true;
+      setLoading(true);
+
+      const fetchProduct = async () => {
+        try {
+          const response = await api.get(`/products/${id}`);
+          const productData = response.data;
+          
           setProduct(productData);
           
           // Set default image
@@ -35,10 +41,11 @@ const ProductView = () => {
             setMainImage(productData.imageURLs[0]);
           }
           
-          // Set default size and color
+          // Set default size and color if variants exist
           if (productData.variants && productData.variants.length > 0) {
             // Find a variant that has stock
             const inStockVariant = productData.variants.find(v => v.stock > 0);
+            
             if (inStockVariant) {
               setSelectedSize(inStockVariant.size);
               setSelectedColor(inStockVariant.color);
@@ -48,26 +55,33 @@ const ProductView = () => {
               setSelectedColor(productData.variants[0].color);
             }
           }
+          
+          setError(null);
+        } catch (err) {
+          console.error('Product fetch error:', err);
+          setError('Failed to load product details. Please try again later.');
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError('Failed to load product details');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
+
+      fetchProduct();
+    }
     
-    getProduct();
-  }, [id, fetchProductById]);
+    // Cleanup function
+    return () => {
+      fetchingRef.current = false;
+    };
+  }, [id]); // Only depend on the ID, not on any function references
   
   // Get unique sizes and colors
   const getSizes = () => {
-    if (!product) return [];
+    if (!product || !product.variants || !Array.isArray(product.variants)) return [];
     return [...new Set(product.variants.map(v => v.size))];
   };
   
   const getColors = (size) => {
-    if (!product) return [];
+    if (!product || !product.variants || !Array.isArray(product.variants)) return [];
     return [...new Set(product.variants
       .filter(v => v.size === size)
       .map(v => v.color))];
@@ -75,7 +89,7 @@ const ProductView = () => {
   
   // Check if current variant is in stock
   const isVariantInStock = () => {
-    if (!product || !selectedSize || !selectedColor) return false;
+    if (!product || !selectedSize || !selectedColor || !product.variants) return false;
     
     const variant = product.variants.find(
       v => v.size === selectedSize && v.color === selectedColor
@@ -86,7 +100,7 @@ const ProductView = () => {
   
   // Get current variant stock quantity
   const getVariantStock = () => {
-    if (!product || !selectedSize || !selectedColor) return 0;
+    if (!product || !selectedSize || !selectedColor || !product.variants) return 0;
     
     const variant = product.variants.find(
       v => v.size === selectedSize && v.color === selectedColor
@@ -187,49 +201,53 @@ const ProductView = () => {
           {/* Variant Selection */}
           <div className="space-y-6 mb-6">
             {/* Size Selection */}
-            <div>
-              <h2 className="text-sm font-medium text-gray-900 mb-2">Size</h2>
-              <div className="flex flex-wrap gap-2">
-                {getSizes().map(size => (
-                  <button
-                    key={size}
-                    onClick={() => handleSizeChange(size)}
-                    className={`px-4 py-2 rounded-md border ${
-                      selectedSize === size
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-gray-900 border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+            {product.variants && product.variants.length > 0 && (
+              <div>
+                <h2 className="text-sm font-medium text-gray-900 mb-2">Size</h2>
+                <div className="flex flex-wrap gap-2">
+                  {getSizes().map(size => (
+                    <button
+                      key={size}
+                      onClick={() => handleSizeChange(size)}
+                      className={`px-4 py-2 rounded-md border ${
+                        selectedSize === size
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-gray-900 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
             {/* Color Selection */}
-            <div>
-              <h2 className="text-sm font-medium text-gray-900 mb-2">Color</h2>
-              <div className="flex flex-wrap gap-2">
-                {getColors(selectedSize).map(color => (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    className={`p-0.5 rounded-full ${
-                      selectedColor === color ? 'ring-2 ring-blue-600' : ''
-                    }`}
-                    title={color}
-                  >
-                    <div 
-                      className="w-8 h-8 rounded-full border border-gray-300"
-                      style={{ 
-                        backgroundColor: color.toLowerCase(),
-                        borderColor: color.toLowerCase() === 'white' ? '#d1d5db' : 'transparent'
-                      }}
-                    ></div>
-                  </button>
-                ))}
+            {product.variants && product.variants.length > 0 && selectedSize && (
+              <div>
+                <h2 className="text-sm font-medium text-gray-900 mb-2">Color</h2>
+                <div className="flex flex-wrap gap-2">
+                  {getColors(selectedSize).map(color => (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(color)}
+                      className={`p-0.5 rounded-full ${
+                        selectedColor === color ? 'ring-2 ring-blue-600' : ''
+                      }`}
+                      title={color}
+                    >
+                      <div 
+                        className="w-8 h-8 rounded-full border border-gray-300"
+                        style={{ 
+                          backgroundColor: color.toLowerCase(),
+                          borderColor: color.toLowerCase() === 'white' ? '#d1d5db' : 'transparent'
+                        }}
+                      ></div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
             {/* Quantity Selection */}
             <div>
@@ -260,7 +278,7 @@ const ProductView = () => {
           </div>
           
           {/* Stock Status */}
-          {!isVariantInStock() && (
+          {product.variants && product.variants.length > 0 && !isVariantInStock() && (
             <div className="mb-4">
               <p className="text-red-600 font-semibold">
                 This variant is out of stock. Please select a different size or color.

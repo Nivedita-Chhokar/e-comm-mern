@@ -15,8 +15,10 @@ const useProducts = (initialCategory = null) => {
       setError(null);
       const data = await getAllProducts(category, includeOutOfStock);
       setProducts(data);
+      return data;
     } catch (err) {
       setError(err.message || 'Failed to fetch products');
+      return [];
     } finally {
       setLoading(false);
     }
@@ -24,12 +26,18 @@ const useProducts = (initialCategory = null) => {
 
   // Fetch a single product by ID
   const fetchProductById = async (productId) => {
+    if (!productId) {
+      setError('Invalid product ID');
+      return null;
+    }
+
     try {
       setLoading(true);
       setError(null);
       const data = await getProductById(productId);
       return data;
     } catch (err) {
+      console.error('Product fetch error:', err);
       setError(err.message || `Failed to fetch product with ID ${productId}`);
       return null;
     } finally {
