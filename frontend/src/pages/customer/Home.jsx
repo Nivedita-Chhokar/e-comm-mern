@@ -34,8 +34,8 @@ const Home = () => {
           </div>
           <div className="md:w-1/2 md:pl-10">
             <img
-              src="https://images.unsplash.com/photo-1586902197503-e71026292412?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
-              alt="Modern air conditioner"
+              src="https://i.pinimg.com/736x/8e/96/5e/8e965eccc96a868ddfd0bf77b365f168.jpg"
+              alt="Modern Air conditioner"
               className="rounded-lg shadow-xl"
             />
           </div>
@@ -50,7 +50,7 @@ const Home = () => {
           <Link to="/products?category=fan" className="group">
             <div className="relative overflow-hidden rounded-lg h-80">
               <img
-                src="https://images.unsplash.com/photo-1601084881623-cdf9a8ea242c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+                src="https://img.lumens.com/9JWOMRAM/at/nzghxp4k43m99hqpwk8jsxnw/MonteCarlo_MinimalistMaxCeilingFan_App2_web.jpg"
                 alt="Fans"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
               />
@@ -68,7 +68,7 @@ const Home = () => {
           <Link to="/products?category=air_conditioner" className="group">
             <div className="relative overflow-hidden rounded-lg h-80">
               <img
-                src="https://images.unsplash.com/photo-1615876234886-fd9a39fda97f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2132&q=80"
+                src="https://shop.haierindia.com/blog/wp-content/uploads/2024/08/image2-55-1116x628.jpg.webp"
                 alt="Air Conditioners"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
               />

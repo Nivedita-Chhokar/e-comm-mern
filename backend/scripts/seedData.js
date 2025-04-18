@@ -46,8 +46,8 @@ const products = [
     price: 59.99,
     category: 'fan',
     imageURLs: [
-      'https://example.com/images/arctic-breeze-1.jpg',
-      'https://example.com/images/arctic-breeze-2.jpg',
+      'https://m.media-amazon.com/images/I/51fFKeEvuVL._SL1500_.jpg',
+      'https://m.media-amazon.com/images/I/51mj8iqeu5L._SX679_.jpg',
     ],
     variants: [
       {
@@ -97,8 +97,8 @@ const products = [
     price: 89.99,
     category: 'fan',
     imageURLs: [
-      'https://example.com/images/turbomax-1.jpg',
-      'https://example.com/images/turbomax-2.jpg',
+      'https://m.media-amazon.com/images/I/51DNeTB1ffL._SX679_.jpg',
+      'https://m.media-amazon.com/images/I/51Qts11MjGL._SX679_.jpg',
     ],
     variants: [
       {
@@ -149,8 +149,8 @@ const products = [
     price: 129.99,
     category: 'fan',
     imageURLs: [
-      'https://example.com/images/coolwave-1.jpg',
-      'https://example.com/images/coolwave-2.jpg',
+      'https://m.media-amazon.com/images/I/41Ng05ZCihL._SX679_.jpg',
+      'https://m.media-amazon.com/images/I/41qgxDOToyL._SX679_.jpg',
     ],
     variants: [
       {
@@ -200,8 +200,8 @@ const products = [
     price: 249.99,
     category: 'air_conditioner',
     imageURLs: [
-      'https://example.com/images/chillmaster-1.jpg',
-      'https://example.com/images/chillmaster-2.jpg',
+      'https://m.media-amazon.com/images/I/41s+Ee5BKaL._SX342_SY445_.jpg',
+      'https://m.media-amazon.com/images/I/611j5IuVvHL._SL1200_.jpg',
     ],
     variants: [
       {
@@ -246,8 +246,8 @@ const products = [
     price: 499.99,
     category: 'air_conditioner',
     imageURLs: [
-      'https://example.com/images/frosttech-1.jpg',
-      'https://example.com/images/frosttech-2.jpg',
+      'https://m.media-amazon.com/images/I/31O536vTlLL._SX679_.jpg',
+      'https://m.media-amazon.com/images/I/51QSxJ46ipL._SL1000_.jpg',
     ],
     variants: [
       {
