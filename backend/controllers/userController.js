@@ -20,7 +20,6 @@ exports.getUserProfile = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
   try {
-    // Only allow updating certain fields
     const updatedUser = await User.findOneAndUpdate(
       { firebaseUID: req.user.uid },
       {

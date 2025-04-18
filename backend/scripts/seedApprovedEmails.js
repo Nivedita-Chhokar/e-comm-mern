@@ -38,17 +38,13 @@ const approvedEmails = [
 
 const seedApprovedEmails = async () => {
   try {
-    // Connect to the database
     await connectDB();
 
-    // Clear existing data
     await ApprovedEmail.deleteMany();
 
-    // Insert approved emails
     await ApprovedEmail.insertMany(approvedEmails);
     console.log('Approved emails added successfully');
 
-    // Close the connection
     mongoose.connection.close();
   } catch (error) {
     console.error('Error seeding approved emails:', error);

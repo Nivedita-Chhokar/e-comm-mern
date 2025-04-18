@@ -373,7 +373,6 @@ const users = [
 
 const seedData = async () => {
   try {
-    // Connect to the database
     await connectDB();
     console.log('Connected to MongoDB');
 
@@ -396,17 +395,14 @@ const seedData = async () => {
     await Product.insertMany(products);
     console.log('Added products');
 
-    // Create some sample orders after products are inserted
     const allProducts = await Product.find();
 
-    // Create sample orders
     const orders = [];
 
-    // Customer 1 orders
+    //customer 1 orders 
     const customer1 = await User.findOne({ email: 'customer1@example.com' });
 
     if (customer1 && allProducts.length > 0) {
-      // Create a pending order
       orders.push({
         userId: customer1.firebaseUID,
         items: [
@@ -548,7 +544,6 @@ const seedData = async () => {
 
     console.log('Data seeding completed successfully!');
 
-    // Close the connection
     mongoose.connection.close();
   } catch (error) {
     console.error('Error seeding data:', error);
@@ -556,5 +551,4 @@ const seedData = async () => {
   }
 };
 
-// Run the seed function
 seedData();

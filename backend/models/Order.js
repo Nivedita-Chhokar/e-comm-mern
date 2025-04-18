@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
       enum: ['Pending', 'Paid', 'Failed'],
-      default: 'Paid', // Default to Paid as per the PRD flow
+      default: 'Paid', 
     },
     orderStatus: {
       type: String,

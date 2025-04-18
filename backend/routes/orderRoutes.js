@@ -28,7 +28,7 @@ router.get(
 router.get(
   '/:id',
   verifyToken,
-  orderController.getOrderById // Includes access control in controller
+  orderController.getOrderById 
 );
 
 router.put(

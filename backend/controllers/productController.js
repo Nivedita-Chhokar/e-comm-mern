@@ -3,14 +3,12 @@ const Product = require('../models/Product');
 // Get all products (public)
 exports.getAllProducts = async (req, res) => {
   try {
-    // Allow filtering by category
     const filter = {};
 
     if (req.query.category) {
       filter.category = req.query.category;
     }
 
-    // Only return products that are in stock by default
     if (req.query.includeOutOfStock !== 'true') {
       filter.inStock = true;
     }
@@ -40,21 +38,18 @@ exports.getProductById = async (req, res) => {
 // Create new product (admin only)
 exports.createProduct = async (req, res) => {
   try {
-    // Validate product category based on PRD
     if (!['fan', 'air_conditioner'].includes(req.body.category)) {
       return res.status(400).json({
         message: "Product category must be either 'fan' or 'air_conditioner'",
       });
     }
 
-    // Check if at least one variant is provided
     if (!req.body.variants || req.body.variants.length === 0) {
       return res.status(400).json({
         message: 'At least one size and color variant is required',
       });
     }
 
-    // Calculate inStock based on variants
     const hasStock = req.body.variants.some(variant => variant.stock > 0);
 
     const newProduct = new Product({
@@ -72,7 +67,6 @@ exports.createProduct = async (req, res) => {
 // Update product (admin only)
 exports.updateProduct = async (req, res) => {
   try {
-    // If updating variants, calculate inStock
     let updateData = { ...req.body };
 
     if (req.body.variants) {

@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ['fan', 'air_conditioner'], // Only fans and air conditioners as per PRD
+      enum: ['fan', 'air_conditioner'], 
     },
     imageURLs: [String],
     variants: [

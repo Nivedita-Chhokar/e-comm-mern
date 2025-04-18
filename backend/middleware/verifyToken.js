@@ -12,7 +12,6 @@ const verifyToken = async (req, res, next) => {
   try {
     console.log('Processing token...');
     
-    // First, try to verify as an ID token
     let decodedToken;
     try {
       decodedToken = await admin.auth().verifyIdToken(token);
@@ -20,8 +19,6 @@ const verifyToken = async (req, res, next) => {
     } catch (idTokenError) {
       console.log('Not an ID token, looking up user by custom token...');
       
-      // If that fails, try to find the user in the database directly
-      // This assumes the custom token contains the user's Firebase UID
       const user = await User.findOne({ email: req.query.email });
       
       if (!user) {

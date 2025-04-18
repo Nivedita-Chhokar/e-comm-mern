@@ -25,7 +25,6 @@ exports.getOrderById = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Check if user is authorized to view this order
     if (
       req.user.role !== 'admin' &&
       req.user.role !== 'rider' &&
@@ -36,7 +35,6 @@ exports.getOrderById = async (req, res) => {
         .json({ message: 'Not authorized to view this order' });
     }
 
-    // If rider, check if order is assigned to them
     if (req.user.role === 'rider' && order.assignedRider !== req.user.uid) {
       return res
         .status(403)
@@ -81,34 +79,39 @@ exports.createOrder = async (req, res) => {
 
 // Admin: Update order status
 exports.updateOrderStatus = async (req, res) => {
+  console.log('updateOrderStatus called with params:', req.params);
+  console.log('Request body:', req.body);
+  
   try {
     const { orderStatus } = req.body;
+    console.log('Order status from request:', orderStatus);
 
-    // Validate status transition
     if (!['Processing', 'Shipped', 'Cancelled'].includes(orderStatus)) {
+      console.log('Invalid status transition, received:', orderStatus);
       return res.status(400).json({
         message: 'Invalid status transition for admin',
       });
     }
 
     const order = await Order.findById(req.params.id);
+    console.log('Order found by ID:', order ? 'Yes' : 'No');
 
     if (!order) {
+      console.log('Order not found with ID:', req.params.id);
       return res.status(404).json({ message: 'Order not found' });
     }
 
     order.orderStatus = orderStatus;
+    console.log('Setting order status to:', orderStatus);
 
-    // If status is Shipped, ensure a rider is assigned
     if (orderStatus === 'Shipped' && !req.body.assignedRider) {
+      console.log('Shipping status but no rider assigned');
       return res.status(400).json({
         message: 'Rider must be assigned when shipping an order',
       });
     }
 
-    // If rider is being assigned, update the rider assignment
     if (req.body.assignedRider) {
-      // Verify rider exists and is active
       const rider = await User.findOne({
         firebaseUID: req.body.assignedRider,
         role: 'rider',
@@ -116,28 +119,30 @@ exports.updateOrderStatus = async (req, res) => {
       });
 
       if (!rider) {
+        console.log('Rider not found or not active');
         return res.status(404).json({
           message: 'Rider not found or not active',
         });
       }
 
       order.assignedRider = req.body.assignedRider;
+      console.log('Rider assigned successfully');
     }
 
     await order.save();
+    console.log('Order saved successfully');
 
     res.json(order);
   } catch (error) {
+    console.error('Error in updateOrderStatus:', error);
     res.status(400).json({ error: error.message });
   }
 };
 
-// Rider: Update order delivery status
 exports.updateDeliveryStatus = async (req, res) => {
   try {
     const { orderStatus } = req.body;
 
-    // Only riders can use this endpoint to mark orders as Delivered or Undelivered
     if (!['Delivered', 'Undelivered'].includes(orderStatus)) {
       return res.status(400).json({
         message:
@@ -145,11 +150,10 @@ exports.updateDeliveryStatus = async (req, res) => {
       });
     }
 
-    // Find order and ensure it's assigned to this rider
     const order = await Order.findOne({
       _id: req.params.id,
       assignedRider: req.user.uid,
-      orderStatus: 'Shipped', // Can only update from Shipped status
+      orderStatus: 'Shipped', 
     });
 
     if (!order) {
@@ -161,7 +165,6 @@ exports.updateDeliveryStatus = async (req, res) => {
 
     order.orderStatus = orderStatus;
 
-    // Optional: Add delivery notes if provided
     if (req.body.deliveryNotes) {
       order.deliveryNotes = req.body.deliveryNotes;
     }
@@ -174,7 +177,6 @@ exports.updateDeliveryStatus = async (req, res) => {
   }
 };
 
-// Get assigned orders for a rider
 exports.getRiderOrders = async (req, res) => {
   try {
     const orders = await Order.find({

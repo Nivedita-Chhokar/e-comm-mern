@@ -1,4 +1,3 @@
-// backend/scripts/promoteToAdmin.js
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const ApprovedEmail = require('../models/ApprovedEmail');
@@ -6,11 +5,9 @@ const connectDB = require('../config/db');
 require('dotenv').config();
 
 // This script promotes a specific user to admin role
-// Usage: node promoteToAdmin.js user@example.com
 
 const promoteToAdmin = async () => {
   try {
-    // Get email from command line argument
     const email = process.argv[2];
     
     if (!email) {
@@ -18,15 +15,12 @@ const promoteToAdmin = async () => {
       process.exit(1);
     }
 
-    // Connect to MongoDB
     await connectDB();
     console.log('Connected to MongoDB');
 
-    // Check if email exists in approved emails
     let approvedEmail = await ApprovedEmail.findOne({ email });
     
     if (!approvedEmail) {
-      // Create approved email entry
       approvedEmail = new ApprovedEmail({
         email,
         role: 'admin',
@@ -35,14 +29,12 @@ const promoteToAdmin = async () => {
       await approvedEmail.save();
       console.log('Created approved email entry with admin role');
     } else {
-      // Update role to admin
       approvedEmail.role = 'admin';
       approvedEmail.isActive = true;
       await approvedEmail.save();
       console.log('Updated approved email role to admin');
     }
 
-    // Update user if exists
     const user = await User.findOne({ email });
     
     if (user) {
@@ -56,7 +48,6 @@ const promoteToAdmin = async () => {
 
     console.log(`Success! Email "${email}" has been granted admin privileges.`);
     
-    // Close MongoDB connection
     await mongoose.connection.close();
     console.log('MongoDB connection closed');
     

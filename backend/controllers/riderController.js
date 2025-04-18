@@ -42,7 +42,6 @@ exports.updateDeliveryStatus = async (req, res) => {
   try {
     const { orderStatus, deliveryNotes } = req.body;
 
-    // Only allow updating to Delivered or Undelivered
     if (!['Delivered', 'Undelivered'].includes(orderStatus)) {
       return res.status(400).json({
         message:
@@ -50,11 +49,10 @@ exports.updateDeliveryStatus = async (req, res) => {
       });
     }
 
-    // Find order assigned to this rider
     const order = await Order.findOne({
       _id: req.params.id,
       assignedRider: req.user.uid,
-      orderStatus: 'Shipped', // Can only update from Shipped status
+      orderStatus: 'Shipped', 
     });
 
     if (!order) {
@@ -64,10 +62,8 @@ exports.updateDeliveryStatus = async (req, res) => {
       });
     }
 
-    // Update order status
     order.orderStatus = orderStatus;
 
-    // Add delivery notes if provided
     if (deliveryNotes) {
       order.deliveryNotes = deliveryNotes;
     }
@@ -104,7 +100,6 @@ exports.getRiderProfile = async (req, res) => {
 // Update rider profile (limited fields)
 exports.updateRiderProfile = async (req, res) => {
   try {
-    // Allow updating only certain fields
     const updatedRider = await User.findOneAndUpdate(
       {
         firebaseUID: req.user.uid,

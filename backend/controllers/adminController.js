@@ -2,7 +2,6 @@ const User = require('../models/User');
 const ApprovedEmail = require('../models/ApprovedEmail');
 const Order = require('../models/Order');
 
-// Get all users (admin only)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-__v');
@@ -12,7 +11,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Get user by ID (admin only)
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-__v');
@@ -27,7 +25,6 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// Update user role (admin only)
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
@@ -42,10 +39,8 @@ exports.updateUserRole = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update role in approved emails collection as well
     await ApprovedEmail.findOneAndUpdate({ email: user.email }, { role });
 
-    // Update user role
     user.role = role;
     await user.save();
 
@@ -64,11 +59,9 @@ exports.toggleUserStatus = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Toggle active status
     user.isActive = !user.isActive;
     await user.save();
 
-    // Update status in approved emails collection as well
     await ApprovedEmail.findOneAndUpdate(
       { email: user.email },
       { isActive: user.isActive }
@@ -83,7 +76,6 @@ exports.toggleUserStatus = async (req, res) => {
   }
 };
 
-// Get all riders (for admin to assign to orders)
 exports.getAllRiders = async (req, res) => {
   try {
     const riders = await User.find({
@@ -97,7 +89,6 @@ exports.getAllRiders = async (req, res) => {
   }
 };
 
-// Create an approved email (so a new user can register)
 exports.createApprovedEmail = async (req, res) => {
   try {
     const { email, role } = req.body;
@@ -110,7 +101,6 @@ exports.createApprovedEmail = async (req, res) => {
       return res.status(400).json({ message: 'Invalid role' });
     }
 
-    // Check if email already exists
     const existingEmail = await ApprovedEmail.findOne({ email });
 
     if (existingEmail) {
@@ -136,7 +126,6 @@ exports.createApprovedEmail = async (req, res) => {
   }
 };
 
-// Get all approved emails
 exports.getApprovedEmails = async (req, res) => {
   try {
     const approvedEmails = await ApprovedEmail.find();
@@ -146,7 +135,6 @@ exports.getApprovedEmails = async (req, res) => {
   }
 };
 
-// Delete an approved email
 exports.deleteApprovedEmail = async (req, res) => {
   try {
     const deletedEmail = await ApprovedEmail.findByIdAndDelete(req.params.id);
