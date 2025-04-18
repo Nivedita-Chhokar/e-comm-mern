@@ -6,18 +6,23 @@ const ApprovedEmail = require('../models/ApprovedEmail');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Google login - this is the main authentication method
+// Modify the googleLogin function in authController.js
+// In authController.js
 exports.googleLogin = async (req, res) => {
   const { token } = req.body;
 
-  try {
-    // Verify Google token
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+  if (!token) {
+    return res.status(400).json({ message: 'Token is required' });
+  }
 
-    const payload = ticket.getPayload();
-    const { email, name, picture, sub: googleId } = payload;
+  try {
+    console.log('Processing Firebase ID token directly...');
+    
+    // Skip Google verification and use Firebase Admin SDK directly
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const { email, name, picture, uid } = decodedToken;
+    
+    console.log('Firebase token verified for:', email);
 
     // Check if email is in approved emails
     const approvedEmail = await ApprovedEmail.findOne({
@@ -26,50 +31,44 @@ exports.googleLogin = async (req, res) => {
     });
 
     if (!approvedEmail) {
+      console.log('Email not approved:', email);
       return res.status(403).json({
         message: 'This email is not approved for access',
       });
     }
-
-    // Get or create Firebase user
-    let firebaseUser;
-    try {
-      firebaseUser = await admin.auth().getUserByEmail(email);
-    } catch (error) {
-      // Create new Firebase user if not exists
-      firebaseUser = await admin.auth().createUser({
-        email,
-        displayName: name,
-        photoURL: picture,
-      });
-    }
+    console.log('Email approved with role:', approvedEmail.role);
 
     // Find or create user in our database
     let user = await User.findOne({ email });
 
     if (!user) {
+      console.log('Creating new user in database...');
       user = new User({
         email,
-        displayName: name,
-        photoURL: picture,
-        firebaseUID: firebaseUser.uid,
+        displayName: name || email.split('@')[0],
+        photoURL: picture || '',
+        firebaseUID: uid,
         role: approvedEmail.role,
       });
       await user.save();
+      console.log('New user created in database');
     } else {
       // Update user details in case they've changed
-      user.displayName = name;
-      user.photoURL = picture;
+      console.log('Updating existing user...');
+      user.displayName = name || user.displayName;
+      user.photoURL = picture || user.photoURL;
       user.role = approvedEmail.role; // Ensure role is updated from approved email
+      user.firebaseUID = uid;
       await user.save();
+      console.log('User updated in database');
     }
 
-    // Create custom token for Firebase client SDK
-    const customToken = await admin.auth().createCustomToken(firebaseUser.uid);
+    // Instead of creating a custom token, just use the original ID token
+    console.log('Using original ID token for authentication');
 
     res.json({
       message: 'Authentication successful',
-      token: customToken,
+      token: token,  // Return the original ID token
       user: {
         id: user._id,
         email: user.email,
@@ -89,16 +88,20 @@ exports.googleLogin = async (req, res) => {
 // Get current user
 exports.getCurrentUser = async (req, res) => {
   try {
+    console.log('Fetching current user: ', req.user.uid);
     const user = await User.findOne({ firebaseUID: req.user.uid }).select(
       '-__v'
     );
 
     if (!user) {
+      console.log('User not found in database');
       return res.status(404).json({ message: 'User not found' });
     }
 
+    console.log('User found:', user.email);
     res.json(user);
   } catch (error) {
+    console.error('Error fetching current user:', error);
     res.status(500).json({ error: error.message });
   }
 };

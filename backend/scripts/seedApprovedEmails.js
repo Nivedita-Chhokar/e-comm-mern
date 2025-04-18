@@ -29,6 +29,11 @@ const approvedEmails = [
     role: 'customer',
     isActive: true,
   },
+  {
+    email: 'niveditachhokar@gmail.com',
+    role: 'admin',
+    isActive: true,
+  },
 ];
 
 const seedApprovedEmails = async () => {

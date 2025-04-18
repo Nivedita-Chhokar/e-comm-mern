@@ -17,5 +17,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
+// Add scopes for additional permissions (optional)
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+
+// Set custom parameters
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
 export { auth, googleProvider };
 export default app;

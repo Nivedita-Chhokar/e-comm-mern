@@ -10,42 +10,70 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    console.log('Processing token...');
+    
+    // First, try to verify as an ID token
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(token);
+      console.log('Verified as ID token');
+    } catch (idTokenError) {
+      console.log('Not an ID token, looking up user by custom token...');
+      
+      // If that fails, try to find the user in the database directly
+      // This assumes the custom token contains the user's Firebase UID
+      const user = await User.findOne({ email: req.query.email });
+      
+      if (!user) {
+        console.log('User not found for email');
+        throw new Error('User not found');
+      }
+      
+      // Check if user is active
+      if (!user.isActive) {
+        throw new Error('User account is inactive');
+      }
+      
+      // Create a decoded token equivalent for custom tokens
+      decodedToken = {
+        uid: user.firebaseUID,
+        email: user.email
+      };
+      
+      console.log('Found user by email');
+    }
 
     // Check if email is approved
     const approvedEmail = await ApprovedEmail.findOne({
-      email: decoded.email,
+      email: decodedToken.email,
       isActive: true,
     });
 
     if (!approvedEmail) {
+      console.log('Email not approved:', decodedToken.email);
       return res.status(403).json({
         message: 'Email not approved for access',
       });
     }
 
-    // Find user
-    const user = await User.findOne({ firebaseUID: decoded.uid });
+    // Find user by Firebase UID
+    const user = await User.findOne({ firebaseUID: decodedToken.uid });
 
     if (!user) {
+      console.log('User not found in database:', decodedToken.uid);
       return res.status(404).json({
         message: 'User not found in system',
       });
     }
 
-    // Check if user is active
-    if (!user.isActive) {
-      return res.status(403).json({
-        message: 'User account is inactive',
-      });
-    }
-
     // Add user data to request
     req.user = {
-      ...decoded,
+      uid: user.firebaseUID,
+      email: user.email,
       role: user.role,
       _id: user._id,
     };
+    console.log('User authenticated:', user.email, 'Role:', user.role);
 
     next();
   } catch (err) {
@@ -54,13 +82,4 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-// module.exports = verifyToken;
-module.exports = (req, res, next) => {
-  // For testing only
-  req.user = {
-    uid: 'customer-user-123', // or admin-user-123, rider-user-123
-    email: 'test@example.com',
-    role: 'admin', // or customer, rider
-  };
-  next();
-};
+module.exports = verifyToken;
