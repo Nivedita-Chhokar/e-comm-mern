@@ -26,13 +26,13 @@ const approvedEmails = [
     isActive: true,
   },
   {
-    email: 'customer1@example.com',
-    role: 'customer',
+    email: 'niveditachhokar@gmail.com',
+    role: 'admin',
     isActive: true,
   },
   {
-    email: 'customer2@example.com',
-    role: 'customer',
+    email: 'chhokarnivedita@gmail.com',
+    role: 'rider',
     isActive: true,
   },
 ];

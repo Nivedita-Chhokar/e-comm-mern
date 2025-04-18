@@ -7,7 +7,6 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Google login - this is the main authentication method
 // Modify the googleLogin function in authController.js
-// In authController.js
 exports.googleLogin = async (req, res) => {
   const { token } = req.body;
 
@@ -25,17 +24,22 @@ exports.googleLogin = async (req, res) => {
     console.log('Firebase token verified for:', email);
 
     // Check if email is in approved emails
-    const approvedEmail = await ApprovedEmail.findOne({
+    let approvedEmail = await ApprovedEmail.findOne({
       email,
       isActive: true,
     });
 
+    // If email is not approved, automatically create an entry for them as a customer
     if (!approvedEmail) {
-      console.log('Email not approved:', email);
-      return res.status(403).json({
-        message: 'This email is not approved for access',
+      console.log('Email not found, automatically approving as customer:', email);
+      approvedEmail = new ApprovedEmail({
+        email,
+        role: 'customer',
+        isActive: true,
       });
+      await approvedEmail.save();
     }
+    
     console.log('Email approved with role:', approvedEmail.role);
 
     // Find or create user in our database
