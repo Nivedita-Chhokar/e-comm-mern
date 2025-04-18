@@ -42,7 +42,7 @@ const AppRoutes = () => {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/auth/redirect" element={<AuthRedirect />} />
+      {/* <Route path="/auth/redirect" element={<AuthRedirect />} /> */}
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       {/* Public customer routes */}
@@ -61,8 +61,8 @@ const AppRoutes = () => {
       <Route element={<AdminRoute />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/approved-emails" element={<AdminApprovedEmails />} />
+        {/* <Route path="/admin/users" element={<AdminUsers />} /> */}
+        {/* <Route path="/admin/approved-emails" element={<AdminApprovedEmails />} /> */}
       </Route>
       
       {/* Rider routes */}
