@@ -26,7 +26,7 @@ import OrderHistory from './pages/customer/OrderHistory';
 // Admin pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminOrders from './pages/admin/Orders';
-// import AdminUsers from './pages/admin/Users';
+import AdminUsers from './pages/admin/Users';
 // import AdminApprovedEmails from './pages/admin/ApprovedEmails';
 
 // Rider pages
@@ -57,11 +57,10 @@ const AppRoutes = () => {
         <Route path="/orders" element={<OrderHistory />} />
       </Route>
       
-      {/* Admin routes */}
       <Route element={<AdminRoute />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
-        {/* <Route path="/admin/users" element={<AdminUsers />} /> */}
+        <Route path="/admin/users" element={<AdminUsers />} />
         {/* <Route path="/admin/approved-emails" element={<AdminApprovedEmails />} /> */}
       </Route>
       
