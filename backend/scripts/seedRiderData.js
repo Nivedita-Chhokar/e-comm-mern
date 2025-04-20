@@ -1,4 +1,3 @@
-// backend/scripts/seedRiderData.js
 const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -6,15 +5,13 @@ const Product = require('../models/Product');
 const connectDB = require('../config/db');
 require('dotenv').config();
 
-// Email of the rider you're logged in as
-const RIDER_EMAIL = 'chhokarnivedita@gmail.com'; // Use your actual rider email here
+const RIDER_EMAIL = 'chhokarnivedita@gmail.com'; 
 
 const seedRiderData = async () => {
   try {
     await connectDB();
     console.log('Connected to MongoDB');
 
-    // Find the specific rider by email
     const rider = await User.findOne({ email: RIDER_EMAIL });
     if (!rider) {
       console.error(`No rider found with email ${RIDER_EMAIL}. Please check the email.`);
@@ -36,13 +33,11 @@ const seedRiderData = async () => {
       process.exit(1);
     }
 
-    // Clean up any existing orders for this rider
     const deleteResult = await Order.deleteMany({ assignedRider: rider.firebaseUID });
     console.log(`Deleted ${deleteResult.deletedCount} existing rider orders`);
 
     // Create sample orders assigned to the rider
     const sampleOrders = [
-      // 1. Pending delivery (Shipped)
       {
         userId: customer.firebaseUID,
         items: [
@@ -77,7 +72,6 @@ const seedRiderData = async () => {
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
       },
       
-      // 2. Another pending delivery (Shipped)
       {
         userId: customer.firebaseUID,
         items: [
@@ -112,7 +106,6 @@ const seedRiderData = async () => {
         updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
       },
       
-      // 3. Delivered order
       {
         userId: customer.firebaseUID,
         items: [
@@ -148,7 +141,6 @@ const seedRiderData = async () => {
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
       },
       
-      // 4. Undelivered order
       {
         userId: customer.firebaseUID,
         items: [
@@ -190,7 +182,6 @@ const seedRiderData = async () => {
     
     console.log(`Successfully created ${insertResult.length} sample orders assigned to rider.`);
     
-    // Count orders by status for summary
     const shippedCount = await Order.countDocuments({ 
       assignedRider: rider.firebaseUID,
       orderStatus: 'Shipped'
