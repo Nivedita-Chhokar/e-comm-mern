@@ -24,6 +24,13 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Get the appropriate profile link based on user role
+  const getProfileLink = () => {
+    if (isAdmin()) return '/admin/profile';
+    if (isRider()) return '/rider/profile';
+    return '/profile';
+  };
+
   return (
     <nav className="bg-blue-600 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -100,17 +107,22 @@ const Navbar = () => {
             {/* Authentication buttons */}
             {currentUser ? (
               <div className="flex items-center">
-                <div className="hidden md:flex items-center">
-                  <img
-                    className="h-8 w-8 rounded-full mr-2"
-                    src={currentUser.photoURL || "https://via.placeholder.com/40"}
-                    alt="Profile"
-                  />
-                  <span className="text-white">{currentUser.displayName}</span>
+                <div className="hidden md:flex items-center mr-4">
+                  <Link 
+                    to={getProfileLink()}
+                    className="flex items-center text-white hover:bg-blue-700 px-3 py-2 rounded-md"
+                  >
+                    <img
+                      className="h-8 w-8 rounded-full mr-2"
+                      src={currentUser.photoURL || "https://via.placeholder.com/40"}
+                      alt="Profile"
+                    />
+                    <span>{currentUser.displayName}</span>
+                  </Link>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="ml-4 text-white hover:bg-blue-700 px-3 py-2 rounded-md"
+                  className="text-white hover:bg-blue-700 px-3 py-2 rounded-md"
                 >
                   Logout
                 </button>
@@ -175,6 +187,16 @@ const Navbar = () => {
                 onClick={toggleMenu}
               >
                 Login
+              </Link>
+            )}
+
+            {currentUser && (
+              <Link
+                to={getProfileLink()}
+                className="text-white block hover:bg-blue-700 px-3 py-2 rounded-md"
+                onClick={toggleMenu}
+              >
+                My Profile
               </Link>
             )}
 
