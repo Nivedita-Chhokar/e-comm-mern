@@ -459,7 +459,7 @@ const seedData = async () => {
 
     // Customer 2 orders
     const customer2 = await User.findOne({ email: 'customer2@example.com' });
-    const rider1 = await User.findOne({ email: 'rider1@example.com' });
+    const rider1 = await User.findOne({ email: 'chhokarnivedita@example.com' });
 
     if (customer2 && rider1 && allProducts.length > 2) {
       // Create a shipped order
